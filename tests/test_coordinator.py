@@ -4,7 +4,8 @@ import unittest
 
 import torch
 
-from federated_PPC import FederatedCompositionPlan, fedavg_state_dict, posterior_product
+from baselines import fedavg_state_dict
+from federated_PPC import FederatedCompositionPlan, posterior_product
 from PRC import projected_first_order
 
 

@@ -79,28 +79,6 @@ def posterior_product_two(
     )
 
 
-def naive_posterior_product(
-    log_factors: Sequence[torch.Tensor],
-    weights: Sequence[float] | None = None,
-    *,
-    dim: int = -1,
-) -> torch.Tensor:
-    """Return normalized log probabilities for the uncorrected product.
-
-    q* is proportional to product_i q_i**w_i, with no reference correction.
-    Unit weights over two factors therefore give Norm(q_A q_B).
-    """
-
-    if not log_factors:
-        raise ValueError("at least one factor posterior is required")
-    _check_factors(log_factors[0], log_factors)
-    values = _weights(len(log_factors), weights)
-    raw = values[0] * log_factors[0]
-    for weight, factor in zip(values[1:], log_factors[1:]):
-        raw = raw + weight * factor
-    return raw - torch.logsumexp(raw, dim=dim, keepdim=True)
-
-
 def first_order_residual_probability(
     base: torch.Tensor,
     factors: Sequence[torch.Tensor],
@@ -151,30 +129,6 @@ def projected_first_order(
 
     raw = first_order_residual_probability(base, factors, weights)
     return project_probability(raw, dim=dim, eps=eps)
-
-
-def posterior_average(
-    factors: Sequence[torch.Tensor],
-    weights: Sequence[float] | None = None,
-) -> torch.Tensor:
-    """Return a normalized non-negative mixture of factor posteriors."""
-
-    if not factors:
-        raise ValueError("at least one factor posterior is required")
-    reference = factors[0]
-    _check_factors(reference, factors)
-    if weights is None:
-        values = tuple(1.0 / len(factors) for _ in factors)
-    else:
-        raw_weights = _weights(len(factors), weights)
-        if any(value < 0 for value in raw_weights) or sum(raw_weights) <= 0:
-            raise ValueError("average weights must be non-negative with positive sum")
-        total = sum(raw_weights)
-        values = tuple(value / total for value in raw_weights)
-    result = torch.zeros_like(reference)
-    for weight, factor in zip(values, factors):
-        result = result + weight * factor
-    return result
 
 
 def signed_first_order(
@@ -243,6 +197,8 @@ def compose_views(
     eps: float = 1e-8,
 ) -> PRCViews:
     """Compute PPC, average, and first-order views from the same posteriors."""
+
+    from baselines.controls import posterior_average
 
     _check_factors(log_base, log_factors)
     base = log_base.exp()

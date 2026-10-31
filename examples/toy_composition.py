@@ -8,8 +8,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import torch
 
+from baselines import naive_posterior_product, posterior_average
 from federated_PPC import compose_ab
-from composition import naive_posterior_product, posterior_average
 
 
 def main() -> None:

@@ -15,7 +15,8 @@ from PRC import (
     flow_from_probability,
     project_probability,
 )
-from composition import compose_views, naive_posterior_product
+from baselines import naive_posterior_product
+from composition import compose_views
 
 
 class TestPosteriorResidualComposition(unittest.TestCase):
