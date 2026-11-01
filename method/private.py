@@ -1,8 +1,7 @@
 """Bounded public-feature releases and background-aware private composition.
 
-The caller owns data access and the privacy ledger. Random generators passed to
-release_summary must be secret for a real private release; experiments here use
-public data and reproducible seeds. No evaluator or private model is used here.
+The caller supplies the sequences and the random generator. A private release
+requires a secret generator. This module does not read files or train a model.
 """
 from __future__ import annotations
 

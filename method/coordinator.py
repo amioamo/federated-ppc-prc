@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 import torch
 
-from composition import project_probability
+from .composition import project_probability
 
 
 @dataclass(frozen=True)
@@ -22,7 +22,7 @@ class FederatedCompositionPlan:
         softmax((1 - sum_i w_i) z_bg + sum_i w_i z_i).
 
     The same coefficients applied to probabilities give the signed PRC vector
-    before the registered positive-part normalization.
+    before positive-part normalization.
     """
 
     reference_id: str
@@ -108,7 +108,7 @@ class FederatedCompositionPlan:
         dim: int = -1,
         eps: float = 1e-8,
     ) -> torch.Tensor:
-        """Apply the registered PRC normalization to the coordinator sum."""
+        """Apply positive-part PRC normalization to the coordinator sum."""
 
         if not bool(torch.isfinite(aggregate_probability_sum).all()):
             raise ValueError("aggregate probability sum must be finite")

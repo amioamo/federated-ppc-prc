@@ -4,19 +4,17 @@ import unittest
 
 import torch
 
-from federated_PPC import (
+from baselines import naive_posterior_product
+from method import (
     compose_ab,
-    posterior_product,
-    posterior_product_two,
-)
-from PRC import (
+    compose_views,
     first_order_residual_probability,
     first_order_velocity,
     flow_from_probability,
+    posterior_product,
+    posterior_product_two,
     project_probability,
 )
-from baselines import naive_posterior_product
-from composition import compose_views
 
 
 class TestPosteriorResidualComposition(unittest.TestCase):
@@ -52,7 +50,7 @@ class TestPosteriorResidualComposition(unittest.TestCase):
         expected = expected / expected.sum(-1, keepdim=True)
         torch.testing.assert_close(observed, expected)
 
-    def test_first_order_and_registered_projection(self) -> None:
+    def test_first_order_projection(self) -> None:
         raw = first_order_residual_probability(self.q0, (self.qa, self.qb))
         torch.testing.assert_close(raw, self.qa + self.qb - self.q0)
         projected = project_probability(raw)

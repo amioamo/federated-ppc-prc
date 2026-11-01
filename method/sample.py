@@ -8,9 +8,9 @@ import scipy.special
 import torch
 from torch.nn import functional as F
 
-from composition import compose_ab, compose_views
-from dirichlet_flow import flow_from_probability
-from method.model import VOCABULARY, Denoiser, ModelConfig, _gamma_sample, expand_state
+from .composition import compose_ab, compose_views
+from .flow import flow_from_probability
+from .model import VOCABULARY, Denoiser, ModelConfig, _gamma_sample, expand_state
 
 
 class CFactor:

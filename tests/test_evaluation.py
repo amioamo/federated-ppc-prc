@@ -47,7 +47,7 @@ class TestEvaluation(unittest.TestCase):
         paired = np.concatenate((tokens, reverse_complement(tokens)), axis=0)
         self.assertEqual(len(canonical_unique(paired)), 2)
 
-    def test_scalar_metrics_have_registered_behavior(self) -> None:
+    def test_identical_inputs_have_zero_discrepancy(self) -> None:
         values = np.asarray([[0.0, 1.0], [2.0, 3.0]])
         self.assertAlmostEqual(energy_distance(values, values), 0.0, places=12)
         self.assertGreater(energy_distance(values, values + 2.0), 0.0)

@@ -5,7 +5,7 @@ from collections.abc import Sequence
 
 import torch
 
-from composition import posterior_product, signed_first_order
+from .composition import posterior_product, signed_first_order
 
 
 def flow_from_probability(

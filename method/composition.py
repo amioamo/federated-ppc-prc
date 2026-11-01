@@ -1,15 +1,8 @@
-"""Core posterior-space operations for Posterior Residual Composition.
+"""Posterior product composition and projected residual composition.
 
-The implementation supports any number of factors. The two-factor helpers
-match the frozen experiments exactly:
-
-    PPC: q* proportional to q_A q_B / q_0
-    naive product: q* proportional to q_A q_B
-    first order: q_0 + (q_A - q_0) + (q_B - q_0)
-
-The projected first-order comparator uses the historical positive-part
-normalization from the registered experiments. It is intentionally not
-presented as mathematically identical to PPC.
+PPC is q* proportional to q_A q_B / q_0. PRC is the projected residual
+q_0 + (q_A - q_0) + (q_B - q_0), with negative mass clipped and renormalized.
+The two operators are not the same.
 """
 from __future__ import annotations
 
@@ -102,8 +95,7 @@ def project_probability(
 ) -> torch.Tensor:
     """Project a signed categorical vector by clipping and renormalizing.
 
-    Rows with no positive mass fall back to the uniform distribution. This is
-    the projection rule used by the frozen PRC experiments.
+    Rows with no positive mass fall back to the uniform distribution.
     """
 
     if eps <= 0:
@@ -143,7 +135,7 @@ def signed_first_order(
 
 @dataclass(frozen=True)
 class PRCViews:
-    """The registered posterior views for one set of atomic experts."""
+    """PPC, the factor average, and the first-order residual for one expert set."""
 
     ppc_log_probability: torch.Tensor
     posterior_average_probability: torch.Tensor
@@ -156,10 +148,8 @@ class ABComposition:
     """The two named A+B posterior compositions for one base/factor triplet.
 
     ``ppc_probability`` is the normalized posterior product
-    ``q_A q_B / q_0``. ``prc_probability`` is the historical projected
-    first-order residual ``project(q_A + q_B - q_0)``. Keeping both fields in
-    one value makes the controlled A+B experiment explicit and prevents the
-    two methods from being confused by their legacy artifact names.
+    ``q_A q_B / q_0``. ``prc_probability`` is the projected residual
+    ``project(q_A + q_B - q_0)``.
     """
 
     ppc_probability: torch.Tensor

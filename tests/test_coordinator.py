@@ -5,8 +5,7 @@ import unittest
 import torch
 
 from baselines import fedavg_state_dict
-from federated_PPC import FederatedCompositionPlan, posterior_product
-from PRC import projected_first_order
+from method import FederatedCompositionPlan, posterior_product, projected_first_order
 
 
 class TestFederatedComposition(unittest.TestCase):

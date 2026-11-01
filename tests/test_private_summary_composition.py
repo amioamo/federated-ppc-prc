@@ -6,7 +6,7 @@ import numpy as np
 from scipy.spatial.distance import pdist
 from scipy.special import softmax
 
-from private_summary_composition import (
+from method import (
     PublicFeatureMap,
     correct_gc,
     conditional_weights,
